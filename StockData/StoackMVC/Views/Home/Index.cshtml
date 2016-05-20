@@ -1,6 +1,28 @@
-﻿
+﻿@model Query
+
 @{ 
     ViewBag.Title = "Welcome";
 }
 
 <h1>Query</h1>
+
+<form asp-action="Index" method="post">
+    <div>
+        <label asp-for="Code"></label>
+        <input asp-for="Code" />
+        <span asp-for="Code"></span>
+    </div>
+    <div>
+        <label asp-for="From"></label>
+        <input asp-for="From" type="date" />
+        <span asp-for="From"></span>
+    </div>
+    <div>
+        <label asp-for="To"></label>
+        <input asp-for="To" type="date" />
+        <span asp-for="To"></span>
+    </div>
+    <div>
+        <input type="submit" value="Query" />
+    </div>
+</form>
