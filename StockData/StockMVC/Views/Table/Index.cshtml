@@ -1,0 +1,25 @@
+﻿@model TableViewModels
+
+@{
+    ViewBag.Title = Model.StockName;
+}
+
+<h1>@Model.StockName</h1>
+
+<table class="table table-bordered table-hover">
+    <tr>
+        @foreach (var key in Model.Keys)
+            {
+            <td>@key</td>
+        }
+    </tr>
+    @foreach (var record in Model.Records)
+    {
+        <tr>
+            @foreach (var key in Model.Keys)
+                {
+                <td>@record[key]</td>
+            }
+        </tr>
+    }
+</table>
