@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -10,10 +11,12 @@ namespace StockMVC.Services
     {
         public async Task<IEnumerable<IDictionary<string, string>>> Get(string name, DateTime from, DateTime to)
         {
+            var allStocks = new Dictionary<string, IEnumerable<IDictionary<string, string>>>();
+
             var url = String.Format(
                 "http://ichart.finance.yahoo.com/table.csv?s={0}&a={1}&b={2}&c={3}&d={4}&e={5}&f={6}&ignore=.csv",
-                name, from.Month, from.Day, from.Year,
-                to.Month, to.Day, to.Year);
+                name, from.Month - 1, from.Day, from.Year,
+                to.Month - 1, to.Day, to.Year);
 
             using (var web = new HttpClient())
             {
@@ -38,7 +41,17 @@ namespace StockMVC.Services
                     var values = row.Split(',');
                     for (var i = 0; i < fields.Length; i++)
                     {
-                        record.Add(fields[i], values[i]);
+                        if (fields[i] == "Date")
+                        {
+                            var date = DateTime.ParseExact(values[i],
+                                "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                            var unixStart = new DateTime(1970, 1, 1);
+                            record.Add(fields[i], ((int)(date - unixStart).TotalDays).ToString());
+                        }
+                        else
+                        {
+                            record.Add(fields[i].Replace(' ', '_'), values[i]);
+                        }
                     }
 
                     list.Add(record);

@@ -1,25 +1,39 @@
-﻿@model TableViewModels
+﻿@model ViewModels
 
 @{
-    ViewBag.Title = Model.StockName;
+    ViewBag.Title = String.Join(",", Model.StockNames);
 }
 
-<h1>@Model.StockName</h1>
+@foreach (var name in Model.StockNames)
+{
 
-<table class="table table-bordered table-hover">
-    <tr>
-        @foreach (var key in Model.Keys)
-            {
-            <td>@key</td>
-        }
-    </tr>
-    @foreach (var record in Model.Records)
-    {
+    <h1>@name</h1>
+
+    <table class="table table-bordered table-hover table-striped">
         <tr>
             @foreach (var key in Model.Keys)
-                {
-                <td>@record[key]</td>
+            {
+                <td>@key</td>
             }
         </tr>
-    }
-</table>
+        @foreach (var record in Model.Records[name])
+        {
+            <tr>
+                @foreach (var key in Model.Keys)
+                {
+                    if (key == "Date")
+                    {
+                        var unixStart = new DateTime(1970, 1, 1);
+                        unixStart = unixStart.AddDays(int.Parse(record[key]));
+                        <td>@String.Format("{0:yyyy-MM-dd}", unixStart)</td>
+                    }
+                    else
+                    {
+                        <td>@record[key]</td>
+                    }
+                }
+            </tr>
+        }
+    </table>
+
+}

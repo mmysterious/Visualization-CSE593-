@@ -21,7 +21,7 @@ namespace StockMVC
         {
             services.AddMvc();
 
-            services.AddSingleton<IStockData, FromYahooStock>();
+            services.AddSingleton<IStockData, MongoDbStock>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

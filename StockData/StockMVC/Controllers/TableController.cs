@@ -20,14 +20,19 @@ namespace StockMVC.Controllers
 
         public async Task<IActionResult> Index(string code, DateTime from, DateTime to)
         {
-            var records = await _stockData.Get(code, from, to);
+            var stockNames = code.Split('+');
+            IDictionary<string, IEnumerable<IDictionary<string, string>>> allRecords
+                = new Dictionary<string, IEnumerable<IDictionary<string, string>>>();
 
-            var model = new TableViewModels { StockName = code, Records = records };
+            foreach (var name in stockNames)
+            {
+                var singleRecords = await _stockData.Get(name, from, to);
+                allRecords[name] = singleRecords;
+            }
 
-            if (records.ToList().Count == 0)
-                model.Keys = new string[0];
-            else
-                model.Keys = records.ToList()[0].Keys;
+            var model = new ViewModels.ViewModels { StockNames = stockNames, Records = allRecords };
+
+            model.Keys = allRecords[stockNames[0]].ToList()[0].Keys;
 
             return View(model);
         }

@@ -7,6 +7,7 @@ namespace StockMVC.Services
 {
     public interface IStockData
     {
-        Task<IEnumerable<IDictionary<string, string>>> Get(string name, DateTime from, DateTime to);
+        Task<IEnumerable<IDictionary<string, string>>>
+            Get(string name, DateTime from, DateTime to);
     }
 }
