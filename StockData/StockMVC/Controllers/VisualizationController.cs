@@ -8,21 +8,20 @@ using System.Threading.Tasks;
 
 namespace StockMVC.Controllers
 {
-    [Route("[controller]/[action]")]
-    public class TableController : Controller
+    public class VisualizationController : Controller
     {
-        private IStockData _stockData;
+        private IStockData _stockDate;
 
-        public TableController(IStockData stockData)
+        public VisualizationController(IStockData stockDate)
         {
-            _stockData = stockData;
+            _stockDate = stockDate;
         }
 
         public async Task<IActionResult> Index(string code, DateTime from, DateTime to)
         {
             var stockNames = code.Split('+');
 
-            var allRecords = await _stockData.Get(stockNames, from, to);
+            var allRecords = await _stockDate.Get(stockNames, from, to);
 
             var model = new StockDictionaryViewModels { StockNames = stockNames, Records = allRecords };
 

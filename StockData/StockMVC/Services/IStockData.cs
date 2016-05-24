@@ -9,5 +9,8 @@ namespace StockMVC.Services
     {
         Task<IEnumerable<IDictionary<string, string>>>
             Get(string name, DateTime from, DateTime to);
+
+        Task<IDictionary<string, IEnumerable<IDictionary<string, string>>>>
+            Get(string[] names, DateTime from, DateTime to);
     }
 }

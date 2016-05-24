@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace StockMVC.ViewModels
 {
-    public class ViewModels
+    public class StockDictionaryViewModels
     {
         public IDictionary<string, IEnumerable<IDictionary<string, string>>> Records { get; set; }
 

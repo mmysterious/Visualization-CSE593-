@@ -9,6 +9,16 @@ namespace StockMVC.Services
 {
     public class FromYahooStock : IStockData
     {
+        public async Task<IDictionary<string, IEnumerable<IDictionary<string, string>>>> Get(string[] names, DateTime from, DateTime to)
+        {
+            var result = new Dictionary<string, IEnumerable<IDictionary<string, string>>>();
+            foreach (var name in names)
+            {
+                result[name] = await Get(name, from, to);
+            }
+            return result;
+        }
+
         public async Task<IEnumerable<IDictionary<string, string>>> Get(string name, DateTime from, DateTime to)
         {
             var allStocks = new Dictionary<string, IEnumerable<IDictionary<string, string>>>();
@@ -20,8 +30,15 @@ namespace StockMVC.Services
 
             using (var web = new HttpClient())
             {
-                var result = await web.GetStringAsync(url);
-                return Parse(result);
+                try
+                {
+                    var result = await web.GetStringAsync(url);
+                    return Parse(result);
+                }
+                catch (HttpRequestException)
+                {
+                    throw new Exception(url);
+                }
             }
         }
 

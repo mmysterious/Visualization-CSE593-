@@ -11,6 +11,16 @@ namespace StockMVC.Services
 {
     public class MongoDbStock : IStockData
     {
+        public async Task<IDictionary<string, IEnumerable<IDictionary<string, string>>>> Get(string[] names, DateTime from, DateTime to)
+        {
+            var result = new Dictionary<string, IEnumerable<IDictionary<string, string>>>();
+            foreach(var name in names)
+            {
+                result[name] = await Get(name, from, to);
+            }
+            return result;
+        }
+
         public async Task<IEnumerable<IDictionary<string, string>>> Get(string name, DateTime from, DateTime to)
         {
             var client = new MongoClient("mongodb://yhstock:yhstock@ds030719.mlab.com:30719/yhstock");

@@ -18,7 +18,7 @@ namespace StockMVC.Controllers
         [HttpPost]
         public IActionResult Index(Query model)
         {
-            return RedirectToAction("index", "table",
+            return RedirectToAction("index", "visualization",
                 new { code = model.Code, from = model.From, to = model.To });
         }
     }
