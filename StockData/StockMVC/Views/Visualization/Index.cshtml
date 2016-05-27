@@ -13,6 +13,7 @@
     stockNames.forEach(function(name) {
         records[name].forEach(function(d) {
             d = JSON.parse(JSON.stringify(d));
+            for (var key in d) { d[key] = +d[key]; }
             var date = new Date(unixStart);
             date.setDate(unixStart.getDate()+(+d.Date));
             d.Date = date;
@@ -23,11 +24,16 @@
 </script>
 
 <div class="panel panel-default">
-    <div class="panel-body" id="bodyPanel">
+    <div class="panel-body">
+        <div id="bodyPanel"></div>
     </div>
 </div>
 
 <script type="text/javascript" src="~/js/d3stack.js"></script>
+<script type="text/javascript" src="~/js/g2stack.js"></script>
+
 <script type="text/javascript">
-    addD3Stack("bodyPanel", flattenRecords, "Open");
+    key = "Open";
+    //addD3Stack("bodyPanel", flattenRecords, key);
+    addG2Stack("bodyPanel", flattenRecords, key);
 </script>
