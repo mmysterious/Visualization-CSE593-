@@ -23,17 +23,42 @@
     })
 </script>
 
-<div class="panel panel-default">
-    <div class="panel-body">
-        <div id="bodyPanel"></div>
+<div class="col-md-12">
+    <div class="btn-group">
+        <button type="button" class="btn btn-success" onclick="selectStreamRiver()">
+            stream river
+        </button>
+        <button type="button" class="btn btn-success">
+            stack
+        </button>
+        <button type="button" class="btn btn-success">
+            path
+        </button>
+        <button type="button" class="btn btn-success">
+            point
+        </button>
+    </div>
+</div>
+
+<div class="col-md-12">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div id="bodyPanel"></div>
+        </div>
     </div>
 </div>
 
 <script type="text/javascript" src="~/js/d3stack.js"></script>
-<script type="text/javascript" src="~/js/g2stack.js"></script>
+<script type="text/javascript" src="~/js/g2common.js"></script>
 
 <script type="text/javascript">
     key = "Open";
-    //addD3Stack("bodyPanel", flattenRecords, key);
-    addG2Stack("bodyPanel", flattenRecords, key);
+    function selectStreamRiver() {
+        var panel = document.getElementById("bodyPanel");
+        while(panel.hasChildNodes()) panel.removeChild(panel.lastChild);
+        addD3Stack("bodyPanel", flattenRecords, key);
+    }
+
+    //addG2Stack("bodyPanel", flattenRecords, key);
+    addG2Path("bodyPanel", flattenRecords, "GOOG", "AAPL", "Open");
 </script>
