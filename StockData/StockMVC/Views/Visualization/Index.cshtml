@@ -34,8 +34,8 @@
         <button type="button" class="btn btn-success" onclick="selectPath()">
             path
         </button>
-        <button type="button" class="btn btn-success">
-            point
+        <button type="button" class="btn btn-success" onclick="selectKLine()">
+            k-line
         </button>
     </div>
 </div>
@@ -44,7 +44,41 @@
     <div class="panel panel-default">
         <div class="panel-body">
             <div id="ctrlPanel" class="col-md-12"></div>
-            <div id="chartPanel" class="col-md-12"></div>
+            <div id="chartPanel" class="col-md-12">
+                @foreach (var name in Model.StockNames)
+                {
+
+                    <h1>@name</h1>
+
+                    <table class="table table-bordered table-hover table-striped">
+                        <tr>
+                            @foreach (var key in Model.Keys)
+                            {
+                                <td>@key</td>
+                            }
+                        </tr>
+                        @foreach (var record in Model.Records[name])
+                        {
+                            <tr>
+                                @foreach (var key in Model.Keys)
+                                {
+                                    if (key == "Date")
+                                    {
+                                        var unixStart = new DateTime(1970, 1, 1);
+                                        unixStart = unixStart.AddDays(int.Parse(record[key]));
+                                        <td>@String.Format("{0:yyyy-MM-dd}", unixStart)</td>
+                                    }
+                                    else
+                                    {
+                                        <td>@record[key]</td>
+                                    }
+                                }
+                            </tr>
+                        }
+                    </table>
+
+                }
+            </div>
         </div>
     </div>
 </div>
@@ -147,6 +181,34 @@
                         addG2Path("chartPanel", flattenRecords, symbol1, symbol2, key);
                     });
         });
+    }
+
+    function selectKLine() {
+        clearPanel("ctrlPanel");
+        clearPanel("chartPanel");
+        var dropdown = d3.select("#ctrlPanel")
+                        .append("div")
+                        .attr("class", "dropdown");
+        dropdown.append("button")
+                .attr("class", "btn")
+                .attr("data-toggle", "dropdown")
+                .attr("id", "keyDropdown")
+                .text("symbols");
+        var ul = dropdown.append("ul")
+                .attr("class", "dropdown-menu");
+        ul.selectAll("li")
+                .data(stockNames)
+                .enter()
+                .append("li")
+                .append("a")
+                .attr("href", "#")
+                .attr("tabindex", -1)
+                .text(function(d) { return d; })
+                .on("click", function(d) {
+                    d3.select("#keyDropdown").text(d);
+                    clearPanel("chartPanel");
+                    addG2KLine("chartPanel", flattenRecords, d);
+                });
     }
 
 </script>

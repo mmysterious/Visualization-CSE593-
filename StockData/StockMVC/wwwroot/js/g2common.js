@@ -68,3 +68,39 @@ function addG2Path(containerId, flattenRecord, symbol1, symbol2, key) {
     chart.render();
 }
 
+function addG2KLine(containerId, flattenRecord, symbol) {
+    var record = [];
+    flattenRecord.forEach(function (d) {
+        if (d.Key == symbol) record.push(d);
+    });
+
+    var chart = new G2.Chart({
+        id: containerId,
+        width: document.getElementById(containerId).clientWidth,
+        height: 400
+    });
+
+    var frame = new G2.Frame(record);
+    frame.addCol("Trend", function (d) {
+        return (d.Open <= d.Close) ? 0 : 1;
+    });
+
+    var defs = {
+        Trend: {
+            type: "cat",
+            values: ['raising', 'falling']
+        },
+        Date: {
+            type: "timeCat",
+            mask: "yyyy-mm-dd"
+        }
+    };
+
+    chart.source(frame, defs);
+    chart.schema()
+        .position("Date*(Open+Close+High+Low)")
+        .color("Trend", ['#19B24B', '#C00000'])
+        .shape("candle")
+        .tooltip("Open*Close*High*Low*Volume");
+    chart.render();
+}
