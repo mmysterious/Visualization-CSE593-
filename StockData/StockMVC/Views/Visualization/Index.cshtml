@@ -28,10 +28,10 @@
         <button type="button" class="btn btn-success" onclick="selectStreamRiver()">
             stream river
         </button>
-        <button type="button" class="btn btn-success">
-            stack
+        <button type="button" class="btn btn-success" onclick="selectAreaStack()">
+            area stack
         </button>
-        <button type="button" class="btn btn-success">
+        <button type="button" class="btn btn-success" onclick="selectPath()">
             path
         </button>
         <button type="button" class="btn btn-success">
@@ -43,7 +43,8 @@
 <div class="col-md-12">
     <div class="panel panel-default">
         <div class="panel-body">
-            <div id="bodyPanel"></div>
+            <div id="ctrlPanel" class="col-md-12"></div>
+            <div id="chartPanel" class="col-md-12"></div>
         </div>
     </div>
 </div>
@@ -52,13 +53,100 @@
 <script type="text/javascript" src="~/js/g2common.js"></script>
 
 <script type="text/javascript">
-    key = "Open";
-    function selectStreamRiver() {
-        var panel = document.getElementById("bodyPanel");
+    function clearPanel(key){
+        var panel = document.getElementById(key);
         while(panel.hasChildNodes()) panel.removeChild(panel.lastChild);
-        addD3Stack("bodyPanel", flattenRecords, key);
     }
 
-    //addG2Stack("bodyPanel", flattenRecords, key);
-    addG2Path("bodyPanel", flattenRecords, "GOOG", "AAPL", "Open");
+    function selectStreamRiver() {
+        clearPanel("ctrlPanel");
+        clearPanel("chartPanel");
+        var dropdown = d3.select("#ctrlPanel")
+                        .append("div")
+                        .attr("class", "dropdown");
+        dropdown.append("button")
+                .attr("class", "btn")
+                .attr("data-toggle", "dropdown")
+                .attr("id", "keyDropdown")
+                .text("keys");
+        var ul = dropdown.append("ul")
+                .attr("class", "dropdown-menu");
+        ul.selectAll("li")
+                .data(keys)
+                .enter()
+                .append("li")
+                .append("a")
+                .attr("href", "#")
+                .attr("tabindex", -1)
+                .text(function(d) { return d; })
+                .on("click", function(d) {
+                    d3.select("#keyDropdown").text(d);
+                    clearPanel("chartPanel");
+                    addD3Stack("chartPanel", flattenRecords, d);
+                });
+    }
+
+    function selectAreaStack() {
+        clearPanel("ctrlPanel");
+        clearPanel("chartPanel");
+        var dropdown = d3.select("#ctrlPanel")
+                        .append("div")
+                        .attr("class", "dropdown");
+        dropdown.append("button")
+                .attr("class", "btn")
+                .attr("data-toggle", "dropdown")
+                .attr("id", "keyDropdown")
+                .text("keys");
+        var ul = dropdown.append("ul")
+                .attr("class", "dropdown-menu");
+        ul.selectAll("li")
+                .data(keys)
+                .enter()
+                .append("li")
+                .append("a")
+                .attr("href", "#")
+                .attr("tabindex", -1)
+                .text(function(d) { return d; })
+                .on("click", function(d) {
+                    d3.select("#keyDropdown").text(d);
+                    clearPanel("chartPanel");
+                    addG2Stack("chartPanel", flattenRecords, d);
+                });
+    }
+
+    function selectPath() {
+        clearPanel("ctrlPanel");
+        clearPanel("chartPanel");
+        ["symbol1", "symbol2", "key"].forEach(function (id) {
+            var dropdown = d3.select("#ctrlPanel")
+                            .append("div")
+                            .attr("class", "dropdown col-md-2");
+            dropdown.append("button")
+                    .attr("class", "btn")
+                    .attr("data-toggle", "dropdown")
+                    .attr("id", id)
+                    .text(id);
+            var ul = dropdown.append("ul")
+                    .attr("class", "dropdown-menu");
+            var data = id == "key" ? keys : stockNames;
+            ul.selectAll("li")
+                    .data(data)
+                    .enter()
+                    .append("li")
+                    .append("a")
+                    .attr("href", "#")
+                    .attr("tabindex", -1)
+                    .text(function(d) { return d; })
+                    .on("click", function(d) {
+                        d3.select("#"+id).text(d);
+                        clearPanel("chartPanel");
+                        var symbol1 = d3.select("#symbol1").text();
+                        var symbol2 = d3.select("#symbol2").text();
+                        var key = d3.select("#key").text();
+                        if (symbol1=="symbol1" || symbol2=="symbol2" || key=="key") return;
+                        addG2Path("chartPanel", flattenRecords, symbol1, symbol2, key);
+                    });
+        });
+    }
+
 </script>

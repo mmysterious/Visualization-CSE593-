@@ -4,7 +4,11 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
+    <script src="/node_modules/jquery/dist/jquery.js"></script>
+    <script src="/node_modules/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="/node_modules/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
     <link href="/node_modules/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.js"></script>
     <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
     <script src="https://as.alipayobjects.com/g/datavis/g2/1.2.2/index.js"></script>
 </head>
@@ -21,10 +25,6 @@
     <div class="container">
         @RenderBody()
     </div>
-
-    <script src="/node_modules/jquery/dist/jquery.js"></script>
-    <script src="/node_modules/jquery-validation/dist/jquery.validate.js"></script>
-    <script src="/node_modules/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
 
 </body>
 </html>
