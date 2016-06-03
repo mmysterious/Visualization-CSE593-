@@ -37,6 +37,9 @@
         <button type="button" class="btn btn-success" onclick="selectKLine()">
             k-line
         </button>
+        <button type="button" class="btn btn-success" onclick="selectCompare()">
+            compare
+        </button>
     </div>
 </div>
 
@@ -48,34 +51,34 @@
                 @foreach (var name in Model.StockNames)
                 {
 
-                    <h1>@name</h1>
+                <h1>@name</h1>
 
-                    <table class="table table-bordered table-hover table-striped">
+                <table class="table table-bordered table-hover table-striped">
+                    <tr>
+                        @foreach (var key in Model.Keys)
+                            {
+                            <td>@key</td>
+                            }
+                    </tr>
+                    @foreach (var record in Model.Records[name])
+                        {
                         <tr>
                             @foreach (var key in Model.Keys)
-                            {
-                                <td>@key</td>
-                            }
-                        </tr>
-                        @foreach (var record in Model.Records[name])
-                        {
-                            <tr>
-                                @foreach (var key in Model.Keys)
                                 {
                                     if (key == "Date")
                                     {
                                         var unixStart = new DateTime(1970, 1, 1);
                                         unixStart = unixStart.AddDays(int.Parse(record[key]));
-                                        <td>@String.Format("{0:yyyy-MM-dd}", unixStart)</td>
+                                <td>@String.Format("{0:yyyy-MM-dd}", unixStart)</td>
                                     }
                                     else
                                     {
-                                        <td>@record[key]</td>
+                                <td>@record[key]</td>
                                     }
                                 }
-                            </tr>
+                        </tr>
                         }
-                    </table>
+                </table>
 
                 }
             </div>
@@ -209,6 +212,39 @@
                     clearPanel("chartPanel");
                     addG2KLine("chartPanel", flattenRecords, d);
                 });
+    }
+
+    function selectCompare() {
+        clearPanel("ctrlPanel");
+        clearPanel("chartPanel");
+        ["symbol1", "symbol2"].forEach(function (id) {
+            var dropdown = d3.select("#ctrlPanel")
+                            .append("div")
+                            .attr("class", "dropdown col-md-2");
+            dropdown.append("button")
+                    .attr("class", "btn")
+                    .attr("data-toggle", "dropdown")
+                    .attr("id", id)
+                    .text(id);
+            var ul = dropdown.append("ul")
+                    .attr("class", "dropdown-menu");
+            ul.selectAll("li")
+                    .data(stockNames)
+                    .enter()
+                    .append("li")
+                    .append("a")
+                    .attr("href", "#")
+                    .attr("tabindex", -1)
+                    .text(function(d) { return d; })
+                    .on("click", function(d) {
+                        d3.select("#"+id).text(d);
+                        clearPanel("chartPanel");
+                        var symbol1 = d3.select("#symbol1").text();
+                        var symbol2 = d3.select("#symbol2").text();
+                        if (symbol1=="symbol1" || symbol2=="symbol2") return;
+                        addG2Compare("chartPanel", flattenRecords, symbol1, symbol2);
+                    });
+        });
     }
 
 </script>

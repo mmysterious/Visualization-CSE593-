@@ -104,3 +104,87 @@ function addG2KLine(containerId, flattenRecord, symbol) {
         .tooltip("Open*Close*High*Low*Volume");
     chart.render();
 }
+
+function addG2Compare(containerId, flattenRecord, symbol1, symbol2) {
+    var container = d3.select("#" + containerId);
+    var width = document.getElementById(containerId).clientWidth;
+    container.append("div").attr("id", "range1").style("width", "100%").style("float", "left");
+    container.append("div").attr("id", "c1").style("width", "49%").style("float", "left");
+    container.append("div").attr("id", "c2").style("width", "49%").style("float", "right");
+    container.append("div").attr("id", "range2").style("width", "100%").style("float", "left");
+
+    var r1 = new G2.Plugin.range({
+        id: "range1",
+        width: width,
+        height: 20,
+        dim: 'Date'
+    });
+    var r2 = new G2.Plugin.range({
+        id: "range2",
+        width: width,
+        height: 20,
+        dim: 'Date'
+    });
+    var c1 = new G2.Chart({
+        id: "c1",
+        width: width / 2 - 2,
+        height: 300
+    });
+    var c2 = new G2.Chart({
+        id: "c2",
+        width: width / 2 - 2,
+        height: 300
+    });
+
+    var record1 = [], record2 = [];
+    flattenRecord.forEach(function (d) {
+        if (d.Key == symbol1) record1.push(JSON.parse(JSON.stringify(d)));
+        if (d.Key == symbol2) record2.push(JSON.parse(JSON.stringify(d)));
+    });
+    record1.forEach(function (d) {
+        d.Date = new Date(d.Date).getTime();
+    });
+    record2.forEach(function (d) {
+        d.Date = new Date(d.Date).getTime();
+    });
+
+    var frame1 = new G2.Frame(record1);
+    var frame2 = new G2.Frame(record2);
+    frame1.addCol("Trend", function (obj) {
+        return (obj.Open <= obj.Close) ? 0 : 1;
+    });
+    frame2.addCol("Trend", function (obj) {
+        return (obj.Open <= obj.Close) ? 0 : 1;
+    });
+
+    var defs = {
+        Trend: {
+            type: "cat",
+            values: ['raising', 'falling']
+        },
+        Date: {
+            type: "timeCat",
+            mask: "yyyy-mm-dd"
+        }
+    };
+
+    c1.source(frame1, defs);
+    c2.source(frame2, defs);
+    c1.schema()
+        .position("Date*(Open+Close+High+Low)")
+        .color("Trend", ['#19B24B', '#C00000'])
+        .shape("candle")
+        .tooltip("Open*Close*High*Low*Volume");
+    c2.schema()
+        .position("Date*(Open+Close+High+Low)")
+        .color("Trend", ['#19B24B', '#C00000'])
+        .shape("candle")
+        .tooltip("Open*Close*High*Low*Volume");
+
+    r1.source(frame1);
+    r1.link(c1);
+    r1.render();
+    r2.source(frame2);
+    r2.link(c2);
+    r2.render();
+}
